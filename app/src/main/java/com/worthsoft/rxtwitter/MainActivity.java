@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.worthsoft.rxtwitter.api.TwitterApi;
+
+import retrofit.RestAdapter;
+
 
 public class MainActivity extends Activity {
 
@@ -14,6 +18,18 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(TwitterApi.ENDPOINT)
+                .build();
+
+        TwitterApi twitterApi = restAdapter.create(TwitterApi.class);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

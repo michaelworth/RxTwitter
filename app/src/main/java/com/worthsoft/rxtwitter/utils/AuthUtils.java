@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -16,24 +17,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AuthUtils {
-
-    public enum HttpMethod {
-        GET("GET"),
-        POST("POST"),
-        DELETE("DELETE"),
-        PUT("PUT");
-
-        private final String value;
-
-        private HttpMethod(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
 
     public static String generateSigningKey(String consumerKey, String token) throws IllegalArgumentException {
         if (consumerKey == null) {
@@ -65,6 +48,15 @@ public class AuthUtils {
         }
 
         return null;
+    }
+
+    public static void insertOAuthParams(HashMap<String, String> params, String consumerKey, String nonce, String token) {
+        params.put("oauth_consumer_key", consumerKey);
+        params.put("oauth_nonce", nonce);
+        params.put("oauth_signature_method", "HMAC-SHA1");
+        params.put("oauth_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
+        params.put("oauth_token", token);
+        params.put("oauth_version", "1.0");
     }
 
     public static String generateParameterString(HashMap<String, String> params) {
@@ -100,7 +92,7 @@ public class AuthUtils {
         return outputStringBuilder.toString();
     }
 
-    public static String generateSignatureBaseString(HttpMethod httpMethod, String url, String parameterString) {
+    public static String generateSignatureBaseString(String httpMethod, String url, String parameterString) {
         StringBuilder outputStringBuilder = new StringBuilder();
         outputStringBuilder.append(httpMethod);
         outputStringBuilder.append("&");
@@ -124,5 +116,11 @@ public class AuthUtils {
         }
 
         return "";
+    }
+
+    public static String generateNonce() {
+        byte[] bytes = new byte[32];
+        new Random().nextBytes(bytes);
+        return Base64.encodeToString(bytes, Base64.URL_SAFE);
     }
 }
