@@ -8,6 +8,6 @@ import rx.Observable;
 public interface TwitterApi {
     public static final String ENDPOINT = "https://api.twitter.com/";
 
-    @POST("oauth/request_token")
+    @POST("/oauth/request_token")
     Observable<RequestToken> getRequestToken();
 }
