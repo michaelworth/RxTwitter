@@ -3,8 +3,6 @@ package com.worthsoft.rxtwitter.utils;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import org.w3c.dom.Text;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;

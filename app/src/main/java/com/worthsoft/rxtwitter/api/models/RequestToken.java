@@ -10,6 +10,12 @@ public class RequestToken {
     @SerializedName("oauth_callback_confirmed")
     private boolean confirmed;
 
+    public RequestToken(String token, String secret, boolean confirmed) {
+        this.token = token;
+        this.secret = secret;
+        this.confirmed = confirmed;
+    }
+
     public String getToken() {
         return token;
     }

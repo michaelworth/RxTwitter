@@ -8,12 +8,12 @@ import android.view.MenuItem;
 
 import com.worthsoft.rxtwitter.api.TwitterApi;
 import com.worthsoft.rxtwitter.api.TwitterClient;
+import com.worthsoft.rxtwitter.api.TwitterRequestHelper;
 import com.worthsoft.rxtwitter.api.models.RequestToken;
 
 import retrofit.RestAdapter;
 import rx.functions.Action0;
 import rx.functions.Action1;
-
 
 public class MainActivity extends Activity {
 
@@ -35,15 +35,17 @@ public class MainActivity extends Activity {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 
+        // TODO : Dagger this stuff
         TwitterApi twitterApi = restAdapter.create(TwitterApi.class);
+        TwitterRequestHelper twitterRequestHelper = new TwitterRequestHelper(twitterApi);
 
-        twitterApi.getRequestToken().subscribe(new Action1<RequestToken>() {
+        twitterRequestHelper.getRequestToken().subscribe(new Action1<RequestToken>() {
             @Override
             public void call(RequestToken requestToken) {
                 Log.i(TAG, "OnNext");
                 Log.i(TAG, "token: " + requestToken.getToken());
                 Log.i(TAG, "secret: " + requestToken.getSecret());
-                Log.i(TAG, "isConfirmed: " + requestToken.isConfirmed());
+                Log.i(TAG, "callback confirmed: " + requestToken.isConfirmed());
             }
         }, new Action1<Throwable>() {
             @Override
