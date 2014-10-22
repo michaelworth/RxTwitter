@@ -26,19 +26,23 @@ public class TwitterClient implements Client {
 
     private static final String TWITTER_CONSUMER_KEY = "ioEcs86I43YA7ChqVCsaz7Il0";
     private static final String TWITTER_CONSUMER_SECRET = "nZt9dbZibRlaCoLpfkrbV2RoN7sChIuDY7uLVYLWK0tSoQYX8W";
+
     public static final String OAUTH_CALLBACK = "http://localhost/sign-in-with-twitter/";
+    public static final String TWITTER_AUTH_URL_BASE = "https://api.twitter.com/oauth/authorize?oauth_token=";
 
     private static final int CONNECT_TIMEOUT_MILLIS = 15000;
     private static final int READ_TIMEOUT_MILLIS = 20000;
 
     final Client client;
+    final String token;
 
-    public TwitterClient() {
+    public TwitterClient(String token) {
         OkHttpClient client = new OkHttpClient();
         client.setConnectTimeout(CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         client.setReadTimeout(READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         client.setProtocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2));
         this.client = new OkClient(client);
+        this.token = token;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class TwitterClient implements Client {
                         params,
                         TWITTER_CONSUMER_KEY,
                         TWITTER_CONSUMER_SECRET,
-                        null,
+                        token,
                         OAUTH_CALLBACK,
                         request.getMethod(),
                         request.getUrl(),

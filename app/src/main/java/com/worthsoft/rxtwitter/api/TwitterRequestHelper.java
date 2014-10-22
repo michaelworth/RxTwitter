@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+import retrofit.RestAdapter;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,8 +20,14 @@ public class TwitterRequestHelper {
 
     private final TwitterApi twitterApi;
 
-    public TwitterRequestHelper(TwitterApi twitterApi) {
-        this.twitterApi = twitterApi;
+    public TwitterRequestHelper(String token) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(TwitterApi.ENDPOINT)
+                .setClient(new TwitterClient(token))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+
+        twitterApi = restAdapter.create(TwitterApi.class);
     }
 
     public Observable<RequestToken> getRequestToken() {
@@ -62,6 +69,5 @@ public class TwitterRequestHelper {
                 return Observable.just(new RequestToken(token, secret, callbackConfirmed));
             }
         });
-
     }
 }

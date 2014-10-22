@@ -49,12 +49,25 @@ public class AuthUtilsTest extends TestCase {
         final String nonce = "ea9ec8429b68d6b77cd5600adbbb0456";
         final String timestamp = "1318467427";
 
-        final String authorizationHeaderExpected = "OAuth oauth_callback=\"http%3A%2F%2Flocalhost%2Fsign-in-with-twitter%2F\",oauth_consumer_key=\"cChZNFj6T5R0TigYB9yd1w\",oauth_nonce=\"ea9ec8429b68d6b77cd5600adbbb0456\",oauth_signature=\"F1Li3tvehgcraF8DMJ7OyxO4w9Y%3D\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1318467427\",oauth_version=\"1.0\"";
+        final String authPrefix = "OAuth ";
+        final String authCallback = "oauth_callback=\"http%3A%2F%2Flocalhost%2Fsign-in-with-twitter%2F\"";
+        final String authConsumer = "oauth_consumer_key=\"cChZNFj6T5R0TigYB9yd1w\"";
+        final String authNonce = "oauth_nonce=\"ea9ec8429b68d6b77cd5600adbbb0456\"";
+        final String authSignature = "oauth_signature=\"F1Li3tvehgcraF8DMJ7OyxO4w9Y%3D\"";
+        final String authSignatureMethod = "oauth_signature_method=\"HMAC-SHA1\"";
+        final String authTimestamp = "oauth_timestamp=\"1318467427\"";
+        final String authVersion = "oauth_version=\"1.0\"";
 
         HashMap<String, String> params = new HashMap<>();
         final String authorizationHeader = AuthUtils.generateAuthorizationHeader(params, consumerKey, consumerSecret, null, callback, method, url, nonce, timestamp);
-        assertEquals("Authorization header didn't match", authorizationHeaderExpected, authorizationHeader);
-
+        assertTrue("OAuth prefix missing or incorrect", authorizationHeader.startsWith(authPrefix));
+        assertTrue("Auth callback missing or incorrect", authorizationHeader.contains(authCallback));
+        assertTrue("Auth consumer missing or incorrect", authorizationHeader.contains(authConsumer));
+        assertTrue("Auth nonce missing or incorrect", authorizationHeader.contains(authNonce));
+        assertTrue("Auth signature missing or incorrect", authorizationHeader.contains(authSignature));
+        assertTrue("Auth signature method missing or incorrect", authorizationHeader.contains(authSignatureMethod));
+        assertTrue("Auth timestamp missing or incorrect", authorizationHeader.contains(authTimestamp));
+        assertTrue("Auth version missing or incorrect", authorizationHeader.contains(authVersion));
     }
 
     public void testPercentEncode() throws Exception {
