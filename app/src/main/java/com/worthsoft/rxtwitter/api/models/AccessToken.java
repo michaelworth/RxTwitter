@@ -2,18 +2,15 @@ package com.worthsoft.rxtwitter.api.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RequestToken {
+public class AccessToken {
     @SerializedName("oauth_token")
     private String token;
     @SerializedName("oauth_token_secret")
     private String secret;
-    @SerializedName("oauth_callback_confirmed")
-    private boolean confirmed;
 
-    public RequestToken(String token, String secret, boolean confirmed) {
+    public AccessToken(String token, String secret) {
         this.token = token;
         this.secret = secret;
-        this.confirmed = confirmed;
     }
 
     public String getToken() {
@@ -22,9 +19,5 @@ public class RequestToken {
 
     public String getSecret() {
         return secret;
-    }
-
-    public boolean isConfirmed() {
-        return confirmed;
     }
 }
