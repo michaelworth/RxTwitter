@@ -24,9 +24,6 @@ import retrofit.mime.TypedOutput;
 
 public class TwitterClient implements Client {
 
-    private static final String TWITTER_CONSUMER_KEY = "ioEcs86I43YA7ChqVCsaz7Il0";
-    private static final String TWITTER_CONSUMER_SECRET = "nZt9dbZibRlaCoLpfkrbV2RoN7sChIuDY7uLVYLWK0tSoQYX8W";
-
     public static final String OAUTH_CALLBACK = "http://localhost/sign-in-with-twitter/";
     public static final String TWITTER_AUTH_URL_BASE = "https://api.twitter.com/oauth/authorize?oauth_token=";
 
@@ -62,8 +59,8 @@ public class TwitterClient implements Client {
         newHeaders.add(new Header("Authorization",
                 AuthUtils.generateAuthorizationHeader(
                         params,
-                        TWITTER_CONSUMER_KEY,
-                        TWITTER_CONSUMER_SECRET,
+                        TwitterConsumerKeys.getConsumerKey(),
+                        TwitterConsumerKeys.getConsumerSecret(),
                         token,
                         tokenSecret,
                         OAUTH_CALLBACK,
