@@ -8,9 +8,8 @@ import java.util.HashMap;
 
 public class AuthUtilsTest extends TestCase {
 
-    public void testGenerateSigningKeyWithNullToken() throws Exception {
+    public void testGenerateSigningKeyWithNullTokenSecret() throws Exception {
         final String testConsumerSecret = "L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg";
-        final String testToken = null;
 
         final String expectedSignature = "F1Li3tvehgcraF8DMJ7OyxO4w9Y%3D";
 
@@ -31,7 +30,7 @@ public class AuthUtilsTest extends TestCase {
         params.put("oauth_nonce", oauth_nonce);
         params.put("oauth_signature_method", oauth_signature_method);
 
-        String signingKey = AuthUtils.generateSigningKey(testConsumerSecret, testToken);
+        String signingKey = AuthUtils.generateSigningKey(testConsumerSecret, null);
         String parameterString = AuthUtils.generateParameterString(params);
         String signatureBase = AuthUtils.generateSignatureBaseString("POST", "https://api.twitter.com/oauth/request_token", parameterString);
         String signature = AuthUtils.generateSignature(signingKey, signatureBase);
@@ -40,7 +39,7 @@ public class AuthUtilsTest extends TestCase {
 
     }
 
-    public void testGenerateAuthorizationHeader() throws Exception {
+    public void testGenerateAuthorizationHeaderWithNullTokenSecret() throws Exception {
         final String consumerKey = "cChZNFj6T5R0TigYB9yd1w";
         final String consumerSecret = "L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg";
         final String callback = "http://localhost/sign-in-with-twitter/";
@@ -59,7 +58,7 @@ public class AuthUtilsTest extends TestCase {
         final String authVersion = "oauth_version=\"1.0\"";
 
         HashMap<String, String> params = new HashMap<>();
-        final String authorizationHeader = AuthUtils.generateAuthorizationHeader(params, consumerKey, consumerSecret, null, callback, method, url, nonce, timestamp);
+        final String authorizationHeader = AuthUtils.generateAuthorizationHeader(params, consumerKey, consumerSecret, null, null, callback, method, url, nonce, timestamp);
         assertTrue("OAuth prefix missing or incorrect", authorizationHeader.startsWith(authPrefix));
         assertTrue("Auth callback missing or incorrect", authorizationHeader.contains(authCallback));
         assertTrue("Auth consumer missing or incorrect", authorizationHeader.contains(authConsumer));
@@ -67,6 +66,38 @@ public class AuthUtilsTest extends TestCase {
         assertTrue("Auth signature missing or incorrect", authorizationHeader.contains(authSignature));
         assertTrue("Auth signature method missing or incorrect", authorizationHeader.contains(authSignatureMethod));
         assertTrue("Auth timestamp missing or incorrect", authorizationHeader.contains(authTimestamp));
+        assertTrue("Auth version missing or incorrect", authorizationHeader.contains(authVersion));
+    }
+
+    public void testGenerateAuthorizationHeader() throws Exception {
+        final String consumerKey = "ioEcs86I43YA7ChqVCsaz7Il0";
+        final String consumerSecret = "nZt9dbZibRlaCoLpfkrbV2RoN7sChIuDY7uLVYLWK0tSoQYX8W";
+
+        final String method = "GET";
+        final String token = "52752711-JoHUCFKCFb7qoyhf5uDXeIZtuqTBKzqpfgnMeRbJQ";
+        final String tokenSecret = "yrXo4lGpq16NsGsUp4bYQOhCJeNQQzQFDkyzBjMbffj7R";
+        final String url = "https://api.twitter.com/1.1/account/verify_credentials.json";
+        final String nonce = "dd1b9e46ec5f79ba8f67c29ef801a0c8";
+        final String timestamp = "1414474075";
+
+        final String authPrefix = "OAuth ";
+        final String authConsumer = "oauth_consumer_key=\"ioEcs86I43YA7ChqVCsaz7Il0\"";
+        final String authNonce = "oauth_nonce=\"dd1b9e46ec5f79ba8f67c29ef801a0c8\"";
+        final String authSignature = "oauth_signature=\"IpArqNj24mDyhQPB4t%2FHGA638fg%3D\"";
+        final String authSignatureMethod = "oauth_signature_method=\"HMAC-SHA1\"";
+        final String authTimestamp = "oauth_timestamp=\"1414474075\"";
+        final String authToken = "oauth_token=\"52752711-JoHUCFKCFb7qoyhf5uDXeIZtuqTBKzqpfgnMeRbJQ\"";
+        final String authVersion = "oauth_version=\"1.0\"";
+
+        HashMap<String, String> params = new HashMap<>();
+        final String authorizationHeader = AuthUtils.generateAuthorizationHeader(params, consumerKey, consumerSecret, token, tokenSecret, null, method, url, nonce, timestamp);
+        assertTrue("OAuth prefix missing or incorrect", authorizationHeader.startsWith(authPrefix));
+        assertTrue("Auth consumer missing or incorrect", authorizationHeader.contains(authConsumer));
+        assertTrue("Auth nonce missing or incorrect", authorizationHeader.contains(authNonce));
+        assertTrue("Auth signature missing or incorrect", authorizationHeader.contains(authSignature));
+        assertTrue("Auth signature method missing or incorrect", authorizationHeader.contains(authSignatureMethod));
+        assertTrue("Auth timestamp missing or incorrect", authorizationHeader.contains(authTimestamp));
+        assertTrue("Auth token missing or incorrect", authorizationHeader.contains(authToken));
         assertTrue("Auth version missing or incorrect", authorizationHeader.contains(authVersion));
     }
 
@@ -80,19 +111,19 @@ public class AuthUtilsTest extends TestCase {
 
     public void testGenerateSigningKey() throws Exception {
         final String testConsumerSecret = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
-        final String testToken = "LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
+        final String testTokenSecret = "LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
         final String expectedSigningKey = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw&LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
 
-        String signingKey = AuthUtils.generateSigningKey(testConsumerSecret, testToken);
+        String signingKey = AuthUtils.generateSigningKey(testConsumerSecret, testTokenSecret);
         assertEquals("Key wasn't correct", expectedSigningKey, signingKey);
     }
 
     public void testGenerateSigningKeyNoToken() throws Exception {
-        final String testConsumer = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
-        final String testToken = null;
+        final String testConsumerSecret = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
+        final String testTokenSecret = null;
         final String expectedSigningKey = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw&";
 
-        String signingKey = AuthUtils.generateSigningKey(testConsumer, testToken);
+        String signingKey = AuthUtils.generateSigningKey(testConsumerSecret, testTokenSecret);
         assertEquals("Key wasn't correct", expectedSigningKey, signingKey);
     }
 
