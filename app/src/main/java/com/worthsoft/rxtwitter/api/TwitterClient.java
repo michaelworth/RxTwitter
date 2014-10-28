@@ -35,14 +35,16 @@ public class TwitterClient implements Client {
 
     final Client client;
     final String token;
+    final String tokenSecret;
 
-    public TwitterClient(String token) {
+    public TwitterClient(String token, String tokenSecret) {
         OkHttpClient client = new OkHttpClient();
         client.setConnectTimeout(CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         client.setReadTimeout(READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         client.setProtocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2));
         this.client = new OkClient(client);
         this.token = token;
+        this.tokenSecret = tokenSecret;
     }
 
     @Override
@@ -63,6 +65,7 @@ public class TwitterClient implements Client {
                         TWITTER_CONSUMER_KEY,
                         TWITTER_CONSUMER_SECRET,
                         token,
+                        tokenSecret,
                         OAUTH_CALLBACK,
                         request.getMethod(),
                         request.getUrl(),

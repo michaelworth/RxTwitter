@@ -27,8 +27,7 @@ public class TwitterOAuthHelper {
     public Observable<RequestToken> getRequestToken() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(TwitterApi.ENDPOINT)
-                .setClient(new TwitterClient(null))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setClient(new TwitterClient(null, null))
                 .build();
 
         TwitterApi twitterApi = restAdapter.create(TwitterApi.class);
@@ -76,8 +75,7 @@ public class TwitterOAuthHelper {
     public Observable<AccessToken> getAccessToken(String token, String verifier) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(TwitterApi.ENDPOINT)
-                .setClient(new TwitterClient(token))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setClient(new TwitterClient(token, null))
                 .build();
 
         TwitterApi twitterApi = restAdapter.create(TwitterApi.class);

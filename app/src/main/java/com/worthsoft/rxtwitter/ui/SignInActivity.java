@@ -1,7 +1,8 @@
-package com.worthsoft.rxtwitter;
+package com.worthsoft.rxtwitter.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import com.worthsoft.rxtwitter.R;
 import com.worthsoft.rxtwitter.api.TwitterClient;
 import com.worthsoft.rxtwitter.api.TwitterOAuthHelper;
 import com.worthsoft.rxtwitter.api.models.AccessToken;
@@ -27,9 +29,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends Activity {
+public class SignInActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = SignInActivity.class.getSimpleName();
 
     @InjectView(R.id.webview)
     WebView webView;
@@ -62,6 +64,8 @@ public class MainActivity extends Activity {
             Log.i(TAG, "LOADED ACCESS TOKEN!");
             Log.i(TAG, "LOADED access token: " + accessToken.getToken());
             Log.i(TAG, "LOADED token secret: " + accessToken.getSecret());
+            startActivity(new Intent(this, UserProfileActivity.class));
+            finish();
         }
     }
 
@@ -91,7 +95,7 @@ public class MainActivity extends Activity {
         throwable.printStackTrace();
         webView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
-        MainActivity.this.requestToken = null;
+        SignInActivity.this.requestToken = null;
     }
 
     private void requestToken() {
@@ -124,7 +128,7 @@ public class MainActivity extends Activity {
             Log.i(TAG, "token: " + requestToken.getToken());
             Log.i(TAG, "secret: " + requestToken.getSecret());
             Log.i(TAG, "callback confirmed: " + requestToken.isConfirmed());
-            MainActivity.this.requestToken = requestToken;
+            SignInActivity.this.requestToken = requestToken;
             webView.loadUrl(TwitterClient.TWITTER_AUTH_URL_BASE + requestToken.getToken());
         }
     }
@@ -186,7 +190,9 @@ public class MainActivity extends Activity {
         public void onNext(AccessToken accessToken) {
             Log.i(TAG, "access token: " + accessToken.getToken());
             Log.i(TAG, "token secret: " + accessToken.getSecret());
-            new AccessTokenStore().storeAccessToken(MainActivity.this, accessToken);
+            new AccessTokenStore().storeAccessToken(SignInActivity.this, accessToken);
+            startActivity(new Intent(SignInActivity.this, UserProfileActivity.class));
+            finish();
         }
     }
 }

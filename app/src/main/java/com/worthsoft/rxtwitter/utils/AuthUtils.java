@@ -38,15 +38,15 @@ public class AuthUtils {
     public static final String VERIFIER = "oauth_verifier";
     public static final String HEADER = "Authorization";
 
-    public static String generateSigningKey(String consumerKey, String token) throws IllegalArgumentException {
-        if (consumerKey == null) {
+    public static String generateSigningKey(String consumerSecret, String accessTokenSecret) throws IllegalArgumentException {
+        if (consumerSecret == null) {
             throw new IllegalArgumentException("Consumer key cannot be null");
         }
 
         // Token can be null for signing key when user is not yet signed in. Ampersand is still appended in this case.
-        StringBuilder stringBuilder = new StringBuilder(consumerKey + "&");
-        if (!TextUtils.isEmpty(token)) {
-            stringBuilder.append(token);
+        StringBuilder stringBuilder = new StringBuilder(consumerSecret + "&");
+        if (!TextUtils.isEmpty(accessTokenSecret)) {
+            stringBuilder.append(accessTokenSecret);
         }
 
         return stringBuilder.toString();
@@ -143,6 +143,7 @@ public class AuthUtils {
             String consumerKey,
             String consumerSecret,
             String token,
+            String tokenSecret,
             String callback,
             String method,
             String url,
@@ -155,7 +156,7 @@ public class AuthUtils {
             params.put(CALLBACK, callback);
         }
 
-        final String signingKey = AuthUtils.generateSigningKey(consumerSecret, null);
+        final String signingKey = AuthUtils.generateSigningKey(consumerSecret, tokenSecret);
         final String parameterString = AuthUtils.generateParameterString(params);
         final String signatureBase = AuthUtils.generateSignatureBaseString(method, url, parameterString);
         final String signature = AuthUtils.generateSignature(signingKey, signatureBase);
