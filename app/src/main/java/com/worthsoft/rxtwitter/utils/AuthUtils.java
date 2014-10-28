@@ -27,6 +27,7 @@ public class AuthUtils {
     public static final String CONSUMER_SECRET = "oauth_consumer_secret";
     public static final String CONSUMER_KEY = "oauth_consumer_key";
     public static final String CALLBACK = "oauth_callback";
+    public static final String CALLBACK_CONFIRMED = "oauth_callback_confirmed";
     public static final String VERSION = "oauth_version";
     public static final String NONCE = "oauth_nonce";
     public static final String REALM = "realm";
